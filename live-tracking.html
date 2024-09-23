@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Tracking with Custom Icon and Alerts</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map {
+            height: 100vh;
+            width: 100%;
+        }
+
+        /* Custom icon for live tracking */
+        .custom-marker {
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+    </style>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map"></div>
+    <!-- Beeping sound -->
+    <audio id="beep-sound">
+        <source src="./assets/audio/beep-warning-6387.mp3" type="audio/wav">
+    </audio>
+
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([19.23853, 73.15848], 15);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Define start and end points
+        var startPoint = [19.23853, 73.15848];
+        var endPoint = [19.23831, 73.15849];
+
+        // Place start and end markers
+        L.marker(startPoint).addTo(map).bindPopup('Start Point (A)').openPopup();
+        L.marker(endPoint).addTo(map).bindPopup('End Point (B)').openPopup();
+
+        // Add a predefined route (for user to follow)
+        var route = [
+            [19.23853, 73.15848],
+            [19.23901256433675, 73.16033488461073],
+            [19.23831, 73.15849]
+        ];
+        var polyline = L.polyline(route, {color: 'blue'}).addTo(map);
+
+        // Create a custom icon for live tracking (black circular marker)
+        var liveTrackingIcon = L.divIcon({
+            className: 'custom-marker'
+        });
+
+        // Initialize live tracking marker
+        var liveTrackingMarker = L.marker(startPoint, {icon: liveTrackingIcon}).addTo(map);
+
+        var lastPosition = startPoint;
+        var MOVEMENT_THRESHOLD = 1; // 1 meter threshold
+
+        // Variables for beeping logic
+        var alertCounter = 0;
+        var alertAllowed = true; // to control alert timing
+
+        // Function to calculate the distance between two points (Haversine formula)
+        function calculateDistance(p1, p2) {
+            var R = 6371e3; // Earth radius in meters
+            var lat1 = p1[0] * Math.PI / 180;
+            var lat2 = p2[0] * Math.PI / 180;
+            var deltaLat = (p2[0] - p1[0]) * Math.PI / 180;
+            var deltaLng = (p2[1] - p1[1]) * Math.PI / 180;
+
+            var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+                    Math.cos(lat1) * Math.cos(lat2) *
+                    Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+            var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            var distance = R * c; // in meters
+            return distance;
+        }
+
+        // Function to simulate live tracking
+        function updatePosition(newLat, newLng) {
+            var newPosition = [newLat, newLng];
+
+            // Calculate the distance moved
+            var distance = calculateDistance(lastPosition, newPosition);
+
+            if (distance > MOVEMENT_THRESHOLD) {
+                liveTrackingMarker.setLatLng(newPosition); // Update marker position
+                map.setView(newPosition, 15); // Optionally update map view to center on new position
+                lastPosition = newPosition;
+
+                // Check if the user deviates from the predefined route
+                if (calculateDistance(newPosition, route[1]) > 50 && alertCounter < 6 && alertAllowed) {
+                    triggerBeepAndAlert();
+                }
+            }
+        }
+
+        // Function to trigger beep and alert with timing control
+        function triggerBeepAndAlert() {
+            var beepSound = document.getElementById("beep-sound");
+
+            alertCounter++; // Increment alert counter
+            beepSound.play(); // Play beep sound
+            alert('You are off the route!'); // Trigger alert
+
+            // Disable further alerts for 30 seconds
+            alertAllowed = false;
+            setTimeout(() => {
+                alertAllowed = true; // Enable alert after 30 seconds
+            }, 30000); // 30-second gap between alerts
+        }
+
+        // Simulate GPS location change
+        setInterval(() => {
+            // Simulating new positions for live tracking (replace this with actual GPS coordinates)
+            var newLat = lastPosition[0] + (Math.random() - 0.5) * 0.001;
+            var newLng = lastPosition[1] + (Math.random() - 0.5) * 0.001;
+            updatePosition(newLat, newLng);
+        }, 5000); // Update every 5 seconds
+    </script>
+</body>
+</html>

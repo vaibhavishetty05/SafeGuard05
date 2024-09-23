@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard - Child Disability Information</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .disability-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        .disability-form h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .disability-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .disability-form button:hover {
+            background-color: #0056b3;
+        }
+        .disability-form select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .disability-form p {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="disability-form">
+        <h2>Does Your Child Have Any Disability?</h2>
+        <form id="disability-form">
+            <select id="disability" required>
+                <option value="" disabled selected>Select an option</option>
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+            </select>
+
+            <div id="disability-types" style="display: none;">
+                <h3>Please specify:</h3>
+                <select id="disability-type">
+                    <option value="" disabled selected>Select disability type</option>
+                    <option value="blind">Blind</option>
+                    <option value="deaf">Deaf</option>
+                    <option value="physical">Physical Disability</option>
+                    <option value="mental">Mental Disability</option>
+                </select>
+            </div>
+
+            <button type="submit">Submit</button>
+        </form>
+        <p><a href="index.html">Back to Home</a></p>
+    </div>
+
+    <script>
+        const disabilitySelect = document.getElementById('disability');
+        const disabilityTypesDiv = document.getElementById('disability-types');
+
+        disabilitySelect.addEventListener('change', function() {
+            if (this.value === 'yes') {
+                disabilityTypesDiv.style.display = 'block';
+            } else {
+                disabilityTypesDiv.style.display = 'none';
+            }
+        });
+
+        document.getElementById('disability-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+            const selectedDisability = disabilitySelect.value;
+
+            if (selectedDisability === 'yes') {
+                const specificDisability = document.getElementById('disability-type').value;
+                alert('You selected: Yes, Disability Type: ' + specificDisability);
+            } else {
+                alert('You selected: No, redirecting to homepage...');
+            }
+            
+            // Redirect to homepage
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>
