@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SafeGuard - Sign Up</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        .signup-form {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        .signup-form h2 {
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .signup-form input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .signup-form button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .signup-form button:hover {
+            background-color: #0056b3;
+        }
+        .signup-form a {
+            display: block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #007bff;
+        }
+        .signup-form a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-form">
+        <h2>Create an Account</h2>
+        <form id="signup-form">
+            <input type="text" id="fullname" placeholder="Full Name" required>
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required>
+            <input type="password" id="confirm-password" placeholder="Confirm Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="login.html">Sign In</a></p>
+    </div>
+
+    <script>
+        document.getElementById('signup-form').addEventListener('submit', function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Mock successful sign-up
+            alert('Sign up successful! Redirecting to role selection page...');
+            window.location.href = 'role-selection.html'; // Redirect to role selection page
+        });
+    </script>
+</body>
+</html>
